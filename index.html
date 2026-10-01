@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday 🤍</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* القسم الأول (المضحك) */
+        .section-funny {
+            width: 100%;
+            max-width: 480px;
+            background: #2a2a2a;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            display: block;
+        }
+
+        /* القسم الثاني (الرومانسي - الخلفية المخططة بالجوزي والسمائي) */
+        .section-romantic {
+            width: 100%;
+            max-width: 600px;
+            background-color: #f5f0eb;
+            background-image: linear-gradient(90deg, rgba(141, 110, 99, 0.18) 20px, transparent 20px),
+                              linear-gradient(0deg, rgba(2, 119, 189, 0.12) 20px, transparent 20px);
+            background-size: 100% 100%;
+            color: #3e2723;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            text-align: center;
+            display: none;
+            border: 3px solid #d4af37;
+        }
+
+        .slide-container {
+            margin-bottom: 25px;
+        }
+
+        .slide-img {
+            width: 100%;
+            max-height: 380px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background-color: #000;
+        }
+
+        .slide-counter {
+            font-size: 14px;
+            color: #b0b0b0;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            background-color: #444;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #555;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .next-section-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af37, #aa771c);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+            transition: 0.3s;
+        }
+
+        .next-section-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+        }
+
+        .visual-display-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 160px;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .visual-item {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .visual-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+		/* خط أشعة الشمس للـ Happy Birthday والتاريخ الذهبي */
+        .sunshine-heading {
+            font-family: 'Cairo', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+            line-height: 1.4;
+            text-align: center;
+            flex: 1;
+        }
+
+        .sunshine-heading span {
+            display: block;
+            font-size: 18px;
+            color: #fbc02d; /* أصفر شمسي دافئ */
+            font-weight: 800;
+            margin-top: 4px;
+            text-shadow: 1px 1px 3px rgba(212, 175, 55, 0.4);
+        }
+
+        .art-cake {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .art-cake svg, .art-balloons svg {
+            width: 110px;
+            height: 110px;
+            stroke: #3e2723;
+            stroke-width: 2.2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
+        }
+
+        .art-balloons {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .message-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.2s ease 3.2s, transform 1.2s ease 3.2s;
+        }
+
+        .message-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .rom-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            line-height: 2.1;
+            font-size: 16px;
+            color: #3e2723;
+            border-right: 5px solid #d4af37;
+            text-align: right;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .intro-text {
+            font-weight: 700;
+            color: #8d6e63;
+            margin-bottom: 12px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- القسم الأول: الصور الثمانية المضحكة -->
+    <div id="funnySection" class="section-funny">
+        <div class="slide-counter" id="slideCounter">الصورة 1 من 8</div>
+        
+        <div class="slide-container">
+            <img id="currentImage" src="" alt="صورة مضحكة" class="slide-img">
+        </div>
+
+        <div class="btn-group">
+            <button id="prevBtn" class="nav-btn" onclick="changeSlide(-1)">السابقة</button>
+            <button id="nextBtn" class="nav-btn" onclick="changeSlide(1)">التالية ➡️</button>
+        </div>
+
+        <div id="finalButtonContainer" style="display: none; margin-top: 20px;">
+            <button class="next-section-btn" onclick="goToRomanticSection()">خلصنا الضحك.. اضغط هنا للجد ✨</button>
+        </div>
+    </div>
+
+    <!-- القسم الثاني: الرومانسي الفخم -->
+    <div id="romanticSection" class="section-romantic">
+        
+        <div class="visual-display-area">
+            
+            <!-- 1. اليسار: Happy Birthday مع التاريخ 11/10 بالذهبي وأشعة الشمس -->
+            <div id="el1" class="visual-item sunshine-heading">
+                Happy Birthday
+                <span>11 / 10 ☀️</span>
+            </div>
+
+            <!-- 2. المنتصف: رسمة الكيكة والشمعة -->
+            <div id="el2" class="visual-item art-cake">
+                <svg viewBox="0 0 100 100">
+                    <path d="M20,65 C20,58 80,58 80,65 L80,85 C80,92 20,92 20,85 Z" />
+                    <ellipse cx="50" cy="65" rx="30" ry="8" />
+                    <path d="M20,65 Q25,75 30,68 Q35,78 40,68 Q45,76 50,68 Q55,76 60,68 Q65,78 70,68 Q75,75 80,65" />
+                    <path d="M47,57 L47,42 C47,40 53,40 53,42 L53,57 Z" />
+                    <path d="M50,40 C47,35 48,30 50,27 C52,30 53,35 50,40 Z" />
+                </svg>
+      <!-- 3. اليمين: بالونات رقم 22 -->
+            <div id="el3" class="visual-item art-balloons">
+                <svg viewBox="0 0 120 100">
+                    <path d="M25,30 C20,15 45,15 42,30 C38,45 20,55 20,60 L48,60" />
+                    <path d="M65,30 C60,15 85,15 82,30 C78,45 60,55 60,60 L88,60" />
+                    <path d="M35,60 Q45,75 55,85" />
+                    <path d="M75,60 Q65,75 55,85" />
+                    <path d="M55,85 C50,83 42,88 35,90 C30,92 25,95 20,97" />
+                    <path d="M55,85 C58,88 65,92 72,90" />
+                </svg>
+            </div>
+
+        </div>
+
+        <div id="messageContainer" class="message-container">
+            <div class="rom-box">
+                <span class="intro-text">في بدايات عامك الثاني والعشرين، أردت أن أترك لك هنا شيئاً يبقى معك دائماً، تماماً كما تبقى أنت بقلبي وعمقي:</span>
+                أنا دوماً بجانبك، تستطيع دائماً أن تستند عليّ، وأن تُقاسمني مسراتي وأحزانك. سأكون لك ملجأً تهلع له دائماً، وأن تجد الأمان معه. سأكون لك كل شيء، سأعطيك كل ما لدي من حب واهتمام وحنيه، سأكون لك سند لن تحتاج شيئاً بعدي. أخاف عليك من حُزناً وضيقنا يأتيك، سأكون معك بالضراء والسراء. أتمنى أن أجعلك حزنك وضيقك تعتليني بدلاً منك. سأكون لك دواء يُشفي جراحك وملجأ تهرع إليه. فأنت أيضا ملجأي ومخبأي ودواي، سعادتي وسبب مبسمي. سأكون لكِ كُل شي ، فأنت كُل شيء لي ..
+            </div>
+
+            <button class="next-section-btn" onclick="resetExperience()">إعادة العرض 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        const images = [
+            "img1.jpg",
+            "img2.jpg",
+            "img3.jpg",
+            "img4.jpg",
+            "img5.jpg",
+            "img6.jpg",
+            "img7.jpg",
+            "img8.jpg"
+        ];
+
+        let currentIndex = 0;
+
+        function updateSlide() {
+            const imgElement = document.getElementById("currentImage");
+            const counterElement = document.getElementById("slideCounter");
+            const prevBtn = document.getElementById("prevBtn");
+            const nextBtn = document.getElementById("nextBtn");
+            const finalBtn = document.getElementById("finalButtonContainer");
+
+            imgElement.src = images[currentIndex];
+            counterElement.innerText = الصورة ${currentIndex + 1} من ${images.length};
+
+            prevBtn.disabled = currentIndex === 0;
+
+            if (currentIndex === images.length - 1) {
+                nextBtn.style.display = "none";
+                finalBtn.style.display = "block";
+            } else {
+                nextBtn.style.display = "block";
+                finalBtn.style.display = "none";
+            }
+        }
+
+        function changeSlide(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= images.length) currentIndex = images.length - 1;
+            updateSlide();
+        }
+
+        function goToRomanticSection() {
+            document.getElementById("funnySection").style.display = "none";
+            document.getElementById("romanticSection").style.display = "block";
+
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 },
+                colors: ['#d4af37', '#fbc02d', '#0277bd', '#8d6e63', '#ffffff']
+            });
+
+            setTimeout(() => {
+                document.getElementById("el1").classList.add("show");
+            }, 400);
+
+            setTimeout(() => {
+                document.getElementById("el2").classList.add("show");
+            }, 1300);
+
+            setTimeout(() => {
+                document.getElementById("el3").classList.add("show");
+            }, 2200);
+
+            setTimeout(() => {
+                document.getElementById("messageContainer").classList.add("show");
+            }, 3000);
+        }      </div>
+		function resetExperience() {
+            currentIndex = 0;
+            document.getElementById("el1").classList.remove("show");
+            document.getElementById("el2").classList.remove("show");
+            document.getElementById("el3").classList.remove("show");
+            document.getElementById("messageContainer").classList.remove("show");
+            
+            document.getElementById("romanticSection").style.display = "none";
+            document.getElementById("funnySection").style.display = "block";
+            updateSlide();
+        }
+
+        window.onload = updateSlide;
+    </script>
+
+</body>
+</html>
+			
